@@ -1,3 +1,5 @@
+INFO7375 — Job-Search Agent 1: The Contract and the Watch. Student: Meena Periasamy. Submitted 2026-10-31.
+
 # the_contract_watch — Job-Search Agent 1 (contract and watch)
 
 Watches one public Greenhouse job board (`cloudflare`) for new postings, identified by `id`, and judges each new posting for one fictional persona (Priya Nair) two ways: a deterministic rule (RECORD) and a Claude judgment (JUDGMENT, model output, not fact). Everything is implemented against [CONTRACT.md](CONTRACT.md). Hand labels follow [LABELING.md](LABELING.md). Reports are in [reports/](reports/), evidence in [evidence/](evidence/), and authorship in [SOURCES.md](SOURCES.md).
