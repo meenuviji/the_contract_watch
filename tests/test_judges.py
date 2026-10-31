@@ -91,8 +91,8 @@ def fake_call(responses):
     """CONSTRUCTED stand-in for the model: returns the given strings in order."""
     it = iter(responses)
     calls = []
-    def call(prompt, model):
-        calls.append((prompt, model))
+    def call(prompt, model, system):
+        calls.append((prompt, model, system))
         return next(it), {"model_reported": ["fake"]}
     call.calls = calls
     return call
@@ -138,6 +138,7 @@ def test_every_call_logged(tmp_path, monkeypatch):
         assert l["ts_utc"].endswith("Z")
         assert l["model"] == "claude-sonnet-5-5"
         assert l["prompt_file"] == "judge_v1.txt"
+        assert l["system_prompt_file"] == "system_v1.txt"
         assert "raw_response" in l
     assert lines[0]["validator"]["ok"] is False and lines[0]["raw_response"] == MALFORMED["prose"]
     assert lines[1]["validator"] == {"ok": True, "errors": []}
@@ -149,6 +150,24 @@ def test_model_from_env_is_used_and_recorded(tmp_path, monkeypatch):
     r = claude_judge.judge(POSTING, PERSONA, call=call, log_path=tmp_path / "log.jsonl")
     assert call.calls[0][1] == "claude-haiku-5-5"
     assert r["model"] == "claude-haiku-5-5" and r["model_source"] == "env JUDGE_MODEL"
+
+
+def test_system_prompt_loaded_from_file_verbatim(tmp_path):
+    call = fake_call([VALID, VALID])
+    r = claude_judge.judge(POSTING, PERSONA, call=call, log_path=tmp_path / "log.jsonl")
+    # Exact text that was hard-coded before it moved to prompts/system_v1.txt.
+    assert call.calls[0][2] == "You are a strict classifier. Follow the user's instructions exactly."
+    assert r["system_prompt_file"] == "system_v1.txt"
+    alt = tmp_path / "system_v2.txt"
+    alt.write_text("ALT")
+    claude_judge.judge(POSTING, PERSONA, call=call, system_path=alt,
+                       log_path=tmp_path / "log.jsonl")
+    assert call.calls[1][2] == "ALT"
+
+
+def test_no_hard_coded_prompt_text_in_judge():
+    src = (ROOT / "agent/claude_judge.py").read_text()
+    assert "strict classifier" not in src
 
 
 def test_default_model_when_env_unset(monkeypatch):
