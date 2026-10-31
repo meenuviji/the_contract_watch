@@ -286,3 +286,39 @@ def test_claude_validator_rejects_made_up_indexed_path_in_text():
 def test_real_indexed_path_in_text_passes():
     text = '"Data Engineer" posting.title vs resume.experience.0.title.'
     assert validate_justification(text, PERSONA, POSTING) == []
+
+
+# Gap 2: state is written only after both judges produced output for every new posting --
+
+def test_state_not_updated_when_judging_fails(tmp_path):
+    st, runs = tmp_path / "s.json", tmp_path / "runs"
+    persona_path = ROOT / "resume/persona.json"
+    p1 = tmp_path / "1.json"
+    p1.write_text(json.dumps({"jobs": [post("Recruiter", "Remote", 1)]}))
+    second = {**POSTING, "id": 4243}
+    p2 = tmp_path / "2.json"
+    p2.write_text(json.dumps({"jobs": [post("Recruiter", "Remote", 1), POSTING, second]}))
+    run("a", p1, st, persona_path, runs)
+    before = st.read_text()
+
+    def fail_on_second(prompt, model, system):
+        """CONSTRUCTED: valid for the first new posting, then the backend dies."""
+        if '"4243"' in prompt:
+            raise RuntimeError("judge backend failed")
+        return VALID, {"model_reported": ["fake"]}
+
+    with pytest.raises(RuntimeError):
+        run("b", p2, st, persona_path, runs, judge=True, claude_call=fail_on_second)
+    assert st.read_text() == before  # both new postings must still be reported as new next run
+
+
+def test_state_updated_after_judging_succeeds(tmp_path):
+    st, runs = tmp_path / "s.json", tmp_path / "runs"
+    persona_path = ROOT / "resume/persona.json"
+    p1 = tmp_path / "1.json"
+    p1.write_text(json.dumps({"jobs": [post("Recruiter", "Remote", 1)]}))
+    p2 = tmp_path / "2.json"
+    p2.write_text(json.dumps({"jobs": [post("Recruiter", "Remote", 1), POSTING]}))
+    run("a", p1, st, persona_path, runs)
+    run("b", p2, st, persona_path, runs, judge=True, claude_call=fake_call([VALID]))
+    assert json.loads(st.read_text()) == {"seen_ids": [1, 4242]}
