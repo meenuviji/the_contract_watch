@@ -40,3 +40,5 @@ Documents and generated data:
 - Greenhouse public Job Board API, board `cloudflare`: `https://boards-api.greenhouse.io/v1/boards/cloudflare/jobs?content=true`, fetched once on 2026-10-31 at 18:21:00Z (`evidence/raw/20261031T182100Z_live.json`). Posting content belongs to Cloudflare.
 - the-reallocation-engine, `search/examples/priya-nair/`: the fictional persona `resume.example.json`, copied unmodified to `resume/persona.json`. `profile.yml` from the same folder was read for the target roles that CONTRACT.md fixes as rule keywords.
 - Claude models: `claude-sonnet-5-5` for every Claude judge call and the file-read surface call. The model for Meena's claude.ai chat run was not recorded.
+
+My written sections were inserted verbatim by Claude Code after a text editor overwrote files twice. The wording of my SAMPLING conclusion, sign-off, driver's seat and one FRICTIONAL note was revised with Claude's (claude.ai) help to remove claims the repo does not support; the decisions and facts in them are mine.
