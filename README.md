@@ -44,3 +44,19 @@ Both runs happened on 2026-10-31, so the "earlier" snapshot is constructed, not 
 The 5 "new" postings are new only relative to the SEEDED baseline, not new on the board since an earlier real fetch.
 
 All posting data in `tests/` is CONSTRUCTED fake data; the `*_WRONG` functions there are CONSTRUCTED wrong implementations used to show the tests catch each wrong version in CONTRACT.md.
+
+## Labeling sheet: `labels/postings_20.csv`
+Built by `scripts/make_labeling_sheet.py` from the real live response `evidence/raw/20261031T182100Z_live.json`, seed 7375. The selection rule was fixed before any judge ran on these postings. No judge has been run on them, and none of the 20 is among the 5 postings judged in run 2. `my_label` and `notes` are blank, to be filled by hand under LABELING.md.
+
+**Selection was stratified by rule clause 1.** A uniform random sample of this board would be almost all negatives: only 4 of 464 postings pass clause 1, so a random 20 would most likely contain none. Both judges would then agree on obvious `not_relevant` cases (as in run 2), which says nothing about false negatives or about where the rule and the hand labels disagree. Stratifying guarantees the sheet contains:
+- `clause1_pass` (4): every posting that passes clause 1 (fewer than the cap of 8 exist).
+- `data_adjacent` (6): titles with Data, Analytics, Analyst, AI, ML, Machine Learning, or Scientist (whole word, case-insensitive) that fail clause 1. These are the borderline cases where the keyword rule and LABELING.md (which also counts Data Scientist and BI Analyst tracks) are most likely to disagree. Groups 1 and 2 together fill 10 rows, so 6 here.
+- `other` (10): a seeded sample of everything else, as a check on obvious negatives.
+
+Because of the stratification, rates measured on this sheet are not board-wide rates.
+
+**Split:** 10 `dev` / 10 `heldout`, seeded, stratified so each group is split evenly (2/2, 3/3, 5/5). Dev rows come first in the file and heldout rows last.
+
+**Columns:**
+- `seniority_words_in_title` uses the rule's clause-3 word list (case-sensitive, as the rule is applied).
+- `requirements_excerpt` is the first 400 characters of plain-text `content` after HTML is stripped and after dropping the `<div class="content-intro">` block. That block holds the same Cloudflare "About Us" boilerplate in all 464 postings, so without dropping it every excerpt would be identical. This was agreed before the sheet was built. The excerpt usually starts at the role description, not necessarily at the requirements list.
