@@ -61,7 +61,6 @@ def run(label: str, from_file: Path | None, state_path: Path, persona_path: Path
     ids = state.posting_ids(board)
     seen = state.load_seen(state_path)
     new = state.new_ids(ids, seen)
-    state.save_seen(ids, state_path)
 
     jobs = {j["id"]: j for j in board["jobs"]}
     result = {
@@ -86,6 +85,9 @@ def run(label: str, from_file: Path | None, state_path: Path, persona_path: Path
     if judge and new:
         result["verdicts_output"] = str(judge_postings(
             [jobs[i] for i in new], resume, out, str(source), claude_call))
+    # Only after both judges produced output for every new posting; a judging error
+    # above leaves state untouched, so those postings are reported as new again next run.
+    state.save_seen(ids, state_path)
     return result
 
 
