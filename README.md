@@ -138,11 +138,27 @@ Meena's manual claude.ai chat run on 8335469 is recorded in `evidence/surface_ch
 **The board did not match the persona.** In the live response, 0 of 464 postings have "Boston" in `posting.location.name`, and the contract's rule judges 0 of 464 relevant. Every judge verdict in the evidence (rule, v1, v2) is `not_relevant`, and so is every one of Meena's 20 hand labels.
 
 ## Sign-off — Job-Search Agent 1
-Checked: ____
-How: ____
-Not checked: 1. ____ 2. ____ 3. ____
-Not claiming: ____
-Signed or withheld: ____ (name, date)
+
+**Checked:**
+- New postings are found by id, not title: `test_new_is_by_id_not_title`, `test_check_catches_new_by_title` (wrong version 3). The live board had two postings with the same title and different ids (8335468, 8335469).
+- Justifications cite only fields that exist: `test_validator_catches_bad_citations[*]` (wrong version 2), including the indexed-path case after its fix.
+- Verdicts stay paired with their own posting: `test_alignment_catches_off_by_one`, `test_alignment_catches_verdict_paired_with_next_id` (wrong version 1).
+- The three gaps Claude Code found (redirects off the allow-list, state written before judging, made-up indexed paths) each have a failing-test commit followed by a fix commit.
+- Baseline reports 0 new; the second run reports exactly the 5 ids removed from the SEEDED file, before and after the fixes.
+- Full suite: 95 passed, run by me on 2026-10-31.
+
+**How:** Claude Code wrote the code and the tests. I checked each test name against the wrong versions in my contract by hand, read the verdicts and justifications, and ran pytest myself. I wrote the contract before any code, but I did not write tests before reading Claude's code. I hand-labeled all 20 postings using LABELING.md.
+
+**Not checked:**
+1. Any posting I labeled relevant. There were none, so false negatives were never tested, and v1, v2 and a constant "not_relevant" judge all scored 10/10.
+2. Any board other than cloudflare, or a second calendar day. Both two-run pairs are SEEDED.
+3. Case-sensitivity of rule clauses 2 and 3. The contract only says case-insensitive for clause 1, so a lowercase "senior" or "remote" is not caught.
+4. Whether `dontAsk` blocks a read outside the temp directory in the file-read surface.
+5. Agreement with any second labeler. I am the only labeler.
+
+**Not claiming:** that this agent finds good jobs for this persona; that judge_v2 is better than judge_v1; that the Claude judge is accurate. I only claim that it repeated the same verdict on easy negatives.
+
+**Signed:** Meena Periasamy, 2026-10-31, subject to the Not checked list above.
 ## Driver's seat
 | Part of the task | What Claude did | What I did | Why it stays mine | Evidence |
 |---|---|---|---|---|
