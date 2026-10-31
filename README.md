@@ -38,6 +38,3 @@ Both runs happened on 2026-10-31, so the "earlier" snapshot is constructed, not 
 The 5 "new" postings are new only relative to the SEEDED baseline, not new on the board since an earlier real fetch.
 
 All posting data in `tests/` is CONSTRUCTED fake data; the `*_WRONG` functions there are CONSTRUCTED wrong implementations used to show the tests catch each wrong version in CONTRACT.md.
-
-## Open contract items
-`CONTRACT.md` still contains `BOARD_TOKEN_HERE` and `CITY_HERE`. The board token used is `cloudflare` (from the assignment prompt's URL). `CITY_HERE` is only used by rule clause 2, which is not built in this layer.
