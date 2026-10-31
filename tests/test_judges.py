@@ -265,3 +265,24 @@ def test_max_attempts_one_makes_exactly_one_call(tmp_path):
                            tag="sampling")
     assert len(call.calls) == 1 and r["verdict"] == "INVALID" and r["attempts"] == 1
     assert json.loads(log.read_text())["tag"] == "sampling"
+
+
+# Gap 3: every path segment, including list indexes, is checked ------------------
+
+@pytest.mark.parametrize("path", ["resume.experience.7.title", "resume.experience.0.nope",
+                                  "resume.education.1.degree"])
+def test_text_validator_rejects_made_up_indexed_path(path):
+    text = f'"Data Engineer" posting.title vs {path}'
+    assert f"cited field does not exist: {path}" in validate_justification(text, PERSONA, POSTING)
+
+
+def test_claude_validator_rejects_made_up_indexed_path_in_text():
+    raw = obj(justification='"Data Engineer" posting.title vs resume.experience.7.title')
+    parsed, errors = validate_claude_output(raw, POSTING, PERSONA)
+    assert parsed is None
+    assert "cited field does not exist: resume.experience.7.title" in errors
+
+
+def test_real_indexed_path_in_text_passes():
+    text = '"Data Engineer" posting.title vs resume.experience.0.title.'
+    assert validate_justification(text, PERSONA, POSTING) == []
