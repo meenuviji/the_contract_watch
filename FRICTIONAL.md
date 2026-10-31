@@ -35,3 +35,15 @@
 | 2026-10-31T19:51:47Z | commit | `9b6aa2a` | Fix: fetch follows redirects off the allow-list | git log |  |
 | 2026-10-31T19:52:54Z | commit | `0b6adb1` | Post-fix SEEDED re-run; mark three gaps fixed in ACTION-SURFACE | git log |  |
 | 2026-10-31T20:09:06Z | commit | `ad6cb7b` | Least autonomy section rewritten by Meena | git log |  |
+| 2026-10-31T20:14:46Z | commit | `7cf1eb1` | Final assembly: README, SOURCES, FRICTIONAL timeline | git log |  |
+| 2026-10-31T20:22:16Z | commit | `007c19b` | README: identify assignment and student | git log |  |
+| 2026-10-31T20:22:35Z | commit | `70aab50` | SOURCES: note on chat-surface evidence | git log |  |
+| 2026-10-31T20:51:14Z | commit | `03d92dd` | Meena: correct contract provenance line, held-out outcome statement, chat header | git log |  |
+| 2026-10-31T20:52:51Z | commit | `85c213d` | Failing test (audit row 2): rule judge cites posting.location.name when the posting has none | git log |  |
+| 2026-10-31T20:52:51Z | test failure | `85c213d` | 3 failed, 92 passed: `test_rule_without_location_cites_only_existing_fields` [3 params] | failing-test commit; pytest output in session |  |
+| 2026-10-31T20:53:08Z | commit | `f0ae1d2` | Fix (audit row 2): rule judge cites posting.location.name only when it exists | git log |  |
+| 2026-10-31T20:53:23Z | commit | `27e68c3` | Fix (audit row 8): replace non-555 test phone with (555) 432-0163 | git log |  |
+| 2026-10-31T20:53:40Z | commit | `3df468e` | Fix (audit row 5): preserve SEEDED state after each run (reproduced from saved files) | git log |  |
+| 2026-10-31T20:53:48Z | commit | `5003516` | Fix (audit row 12): resolve contradiction about re-running the agent in ACTION-SURFACE.md | git log |  |
+| 2026-10-31T20:54:10Z | commit | `3060d6b` | Fix (audit row 15): correct chat-evidence note and attribution in SOURCES.md | git log |  |
+| 2026-10-31T20:54:17Z | commit | `d36ea95` | Fix (audit row 19): note in README that Canvas folder name overrides assignment-XX | git log |  |
