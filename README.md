@@ -144,5 +144,12 @@ Not checked: 1. ____ 2. ____ 3. ____
 Not claiming: ____
 Signed or withheld: ____ (name, date)
 ## Driver's seat
-| Part of the task | What Claude did | What I did | Why it stays mine | Evidence (commit / file / line) |
+| Part of the task | What Claude did | What I did | Why it stays mine | Evidence |
 |---|---|---|---|---|
+| Contract and rule | Drafted a template (claude.ai); Claude Code refused to build until placeholders were filled | Chose the rule, fields, wrong versions and failure sentence; filled and committed them before code | The rule decides what "relevant" means for me; a TA must be able to apply it by hand | 56f30ea, 1ce1af0, 94f5ede (all before d138c84) |
+| Code and tests | Wrote the agent, both judges, the validator and the tests | Checked test names against my wrong versions; ran pytest myself; made it move a hidden system prompt into prompts/ | I answer for what the tests prove, not Claude | 7cc4199; my pytest runs |
+| Hand labels | None; it was told not to suggest labels | Labeled all 20 postings against LABELING.md | If Claude labels, the experiment grades itself | c3732b9 |
+| The one prompt change | Ran v1/v2 on dev, then held-out | Chose the Clause 2 change after the dev results and wrote its rationale | Choosing what to change is the experiment's decision | EXPERIMENT.md section; 8cbaad6 before the first held-out call |
+| Security gaps | Found the redirect, state-timing and indexed-path gaps while comparing surfaces | Decided to fix them test-first rather than only document them | Deciding what ships is my call | bdd8f18/9b6aa2a, 96abd18/c809e8e, 6632159/baffe7f |
+| Least autonomy | Drafted a version marked DRAFT | Rewrote it, citing the chat surface's justification that cited no résumé field | The autonomy choice is the judgment the assignment grades | ad6cb7b |
+| Course repo folder | Proposed renaming it to assignment-01 | Cancelled the rename; kept js1-contract-and-watch/ as Canvas specifies | Submission format is my responsibility | b275073 and the rename revert |
