@@ -74,10 +74,10 @@ PYTHONPATH=. .venv/bin/python scripts/make_labeling_sheet.py evidence/raw/202610
 # reports from saved evidence (no Claude calls)
 PYTHONPATH=. .venv/bin/python scripts/dev_reports.py render     # rewrites reports/SAMPLING.md and the top of reports/EXPERIMENT.md
 PYTHONPATH=. .venv/bin/python scripts/heldout_eval.py render    # re-renders the results and Limits block of EXPERIMENT.md
-git diff reports/            # only hand-written sections show as removed
+git diff reports/            # see the warning below for what changes
 git checkout -- reports/     # restore them
 ```
-**Warning:** `dev_reports.py render` regenerates the two reports from scratch, so it removes hand-written sections (Meena's "The one change I chose and why", and "My conclusion" once written). Checked on 2026-10-31: after both renders, the only diff was the 14 lines of Meena's section in `EXPERIMENT.md`. `reports/ACTION-SURFACE.md` has no generator.
+**Warning:** `dev_reports.py render` regenerates the two reports from scratch, so it removes hand-written sections (Meena's "The one change I chose and why", and "My conclusion" once written). `heldout_eval.py render` also re-creates the generated results and Limits block, which is not in the current `EXPERIMENT.md`: Meena's commit `03d92dd` removed it, and it is still in `70aab50`. Checked on 2026-10-31 at `6a9e851`: after both renders, `EXPERIMENT.md` changes by 68 lines (Meena's 2 section lines removed, 66 generated lines added), and `SAMPLING.md` is unchanged. `reports/ACTION-SURFACE.md` has no generator.
 
 Re-making the Claude calls behind the reports (`scripts/dev_reports.py run`, `scripts/heldout_eval.py run`, `scripts/surface_file_read.py`) produces new model outputs, which may differ from the saved ones, and appends to the call log.
 
