@@ -70,7 +70,9 @@ def _now() -> str:
 
 
 def judge(posting: dict, persona: dict, *, call=None, prompt_path: Path | None = None,
-          system_path: Path | None = None, log_path: Path | None = None) -> dict:
+          system_path: Path | None = None, log_path: Path | None = None,
+          max_attempts: int = MAX_ATTEMPTS, tag: str | None = None) -> dict:
+    """max_attempts=1 gives exactly one call (no retry), e.g. for sampling repeats."""
     prompt_path = prompt_path or PROMPT_PATH
     system_path = system_path or SYSTEM_PATH
     log_path = log_path or CALLS_LOG
@@ -85,7 +87,7 @@ def judge(posting: dict, persona: dict, *, call=None, prompt_path: Path | None =
     log_path.parent.mkdir(parents=True, exist_ok=True)
 
     raws, all_errors = [], []
-    for attempt in range(1, MAX_ATTEMPTS + 1):
+    for attempt in range(1, max_attempts + 1):
         raw, meta = call(prompt, model, system)
         parsed, errors = validate_claude_output(raw, posting, persona)
         with log_path.open("a") as f:
@@ -93,7 +95,7 @@ def judge(posting: dict, persona: dict, *, call=None, prompt_path: Path | None =
                 "ts_utc": _now(), "model": model, "model_source": model_source,
                 "backend": be, "prompt_file": prompt_path.name,
                 "system_prompt_file": system_path.name,
-                "posting_id": posting["id"], "attempt": attempt,
+                "posting_id": posting["id"], "attempt": attempt, "tag": tag,
                 "raw_response": raw,
                 "validator": {"ok": not errors, "errors": errors},
                 **meta,
@@ -106,7 +108,7 @@ def judge(posting: dict, persona: dict, *, call=None, prompt_path: Path | None =
     base = {"posting_id": posting["id"], "kind": "JUDGMENT", "label": JUDGMENT_LABEL,
             "model": model, "model_source": model_source, "backend": be,
             "prompt_file": prompt_path.name, "system_prompt_file": system_path.name,
-            "attempts": len(raws)}
+            "attempts": len(raws), "model_reported": meta.get("model_reported")}
     if parsed is None:
         return {**base, "verdict": "INVALID", "justification": None,
                 "resume_fields": [], "posting_fields": [],

@@ -256,3 +256,12 @@ def test_tests_never_write_real_evidence_log():
     if real.exists():
         assert all(json.loads(l)["backend"] != "injected"
                    for l in real.read_text().splitlines())
+
+
+def test_max_attempts_one_makes_exactly_one_call(tmp_path):
+    call = fake_call([MALFORMED["prose"], VALID])
+    log = tmp_path / "log.jsonl"
+    r = claude_judge.judge(POSTING, PERSONA, call=call, log_path=log, max_attempts=1,
+                           tag="sampling")
+    assert len(call.calls) == 1 and r["verdict"] == "INVALID" and r["attempts"] == 1
+    assert json.loads(log.read_text())["tag"] == "sampling"
