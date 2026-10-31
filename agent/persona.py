@@ -14,11 +14,15 @@ class PersonaError(Exception):
 
 
 def get_path(obj, dotted: str):
-    """Resolve a dotted key path; raise KeyError if any segment is missing."""
+    """Resolve a dotted key path (list items by index, e.g. experience.0.title);
+    raise KeyError if any segment is missing."""
     for key in dotted.split("."):
-        if not isinstance(obj, dict) or key not in obj:
+        if isinstance(obj, dict) and key in obj:
+            obj = obj[key]
+        elif isinstance(obj, list) and key.isdigit() and int(key) < len(obj):
+            obj = obj[int(key)]
+        else:
             raise KeyError(dotted)
-        obj = obj[key]
     return obj
 
 
