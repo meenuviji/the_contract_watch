@@ -30,6 +30,7 @@ Documents and generated data:
 - The Sign-off and Driver's seat entries in `README.md`.
 - The content of `FRICTIONAL.md`.
 - The manual claude.ai chat run: `evidence/surface_chat_prompt.txt`, `evidence/surface_chat_2026-10-31.txt`.
+  evidence/surface_chat_*.txt is a single claude.ai prompt and response made for the action-surface comparison. It contains only a public Greenhouse posting and the fictional priya-nair persona; no personal conversation history is included.
 - Task instructions and decisions throughout, including answers to the clarifying questions Claude Code asked.
 
 ## CONTRACT.md
