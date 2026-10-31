@@ -3,7 +3,8 @@
   python scripts/heldout_eval.py run      # Claude calls; saves evidence/runs/*_v2_eval.json
   python scripts/heldout_eval.py render   # appends results sections to reports/EXPERIMENT.md
 
-Refuses to run unless both prompt files match the commit that fixed v2 (V2_FIXED_COMMIT).
+Refuses to run unless judge_v1.txt, judge_v2.txt and system_v1.txt match the commit that
+fixed v2 (V2_FIXED_COMMIT).
 """
 
 import csv
@@ -164,12 +165,18 @@ def render():
         f"(2026-10-31T19:11:03Z); v1 dev baseline in `{V1_DEV_COMMIT}` (19:15:52Z); "
         f"`prompts/judge_v2.txt` committed in `{V2_FIXED_COMMIT}` (19:25:11Z). "
         f"Held-out calls in the log before {V2_FIXED_COMMIT}: {n_held_before}; first "
-        f"held-out call: {first_held}. The run checked that judge_v1, judge_v2 and system_v1 were "
+        f"held-out call: {first_held}. The run checked that judge_v1.txt, judge_v2.txt and "
+        f"system_v1.txt were "
         f"byte-identical to `{V2_FIXED_COMMIT}` before any call.",
         "",
     ]
-    REPORT.write_text(REPORT.read_text() + "\n".join(L))
-    print(f"appended to {REPORT}")
+    # Replace a previously rendered results block instead of appending a second copy.
+    text = REPORT.read_text()
+    marker = "\n## Results: v2 on dev"
+    if marker in text:
+        text = text[:text.index(marker)]
+    REPORT.write_text(text + "\n".join(L))
+    print(f"rendered results into {REPORT}")
 
 
 if __name__ == "__main__":
