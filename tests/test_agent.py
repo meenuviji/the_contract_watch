@@ -280,3 +280,43 @@ def test_validator_names_the_fake_field(priya):
     errs = validate_justification(justify_FAKE_FIELD_WRONG(priya, POSTING), priya, POSTING)
     assert "cited field does not exist: resume.years_experience" in errs
     assert "cited field does not exist: posting.seniority" in errs
+
+
+# Gap 1: a redirect must not carry the fetch off the allow-list ----------------------
+
+def _fake_transport(monkeypatch, hops):
+    """CONSTRUCTED transport: requests' real redirect logic runs; only the socket is faked.
+    hops maps URL -> (status, location or None, body)."""
+    import requests
+    sent = []
+
+    def send(self, request, **kwargs):
+        sent.append(request.url)
+        status, location, body = hops[request.url]
+        r = requests.Response()
+        r.status_code, r.url, r.request = status, request.url, request
+        r._content, r._content_consumed = body, True
+        if location:
+            r.headers["Location"] = location
+        return r
+    monkeypatch.setattr(requests.adapters.HTTPAdapter, "send", send)
+    return sent
+
+
+@pytest.mark.parametrize("status", [301, 302, 307])
+def test_fetch_refuses_redirect_off_allow_list(status, monkeypatch, tmp_path):
+    evil = "https://evil.example.com/jobs"
+    sent = _fake_transport(monkeypatch, {
+        fetch.BOARD_URL: (status, evil, b""),
+        evil: (200, None, b'{"jobs": [{"id": 666, "title": "planted"}]}'),
+    })
+    with pytest.raises(fetch.HostNotAllowedError):
+        fetch.fetch_board("t", raw_dir=tmp_path)
+    assert evil not in sent          # never contacted the off-list host
+    assert list(tmp_path.iterdir()) == []  # nothing saved
+
+
+def test_fetch_still_saves_direct_200(monkeypatch, tmp_path):
+    _fake_transport(monkeypatch, {fetch.BOARD_URL: (200, None, b'{"jobs": []}')})
+    path = fetch.fetch_board("t", raw_dir=tmp_path)
+    assert path.read_bytes() == b'{"jobs": []}'
