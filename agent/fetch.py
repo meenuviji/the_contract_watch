@@ -38,7 +38,11 @@ def fetch_board(label: str, url: str = BOARD_URL, raw_dir: Path = RAW_DIR) -> Pa
     """Fetch url and write the response body byte-for-byte to raw_dir. Returns the saved path."""
     check_allowed(url)  # before any network call
     safe_label(label)
-    resp = requests.get(url, timeout=30)
+    # Redirects are not followed: a 3xx could lead off the allow-list, so it is an error.
+    resp = requests.get(url, timeout=30, allow_redirects=False)
+    if 300 <= resp.status_code < 400:
+        raise HostNotAllowedError(
+            f"redirect refused: {resp.status_code} to {resp.headers.get('Location')!r}")
     resp.raise_for_status()
     raw_dir.mkdir(parents=True, exist_ok=True)
     path = raw_dir / f"{utc_timestamp()}_{label}.json"

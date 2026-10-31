@@ -48,6 +48,7 @@ def test_allow_list_contains_only_greenhouse():
 def test_fetch_saves_raw_bytes_unmodified(monkeypatch, tmp_path):
     body = b'{"jobs": [],   "meta": {"total": 0}}'  # odd spacing must survive
     class Resp:
+        status_code = 200
         content = body
         def raise_for_status(self): pass
     monkeypatch.setattr(fetch.requests, "get", lambda *a, **k: Resp())
