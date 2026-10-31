@@ -38,7 +38,7 @@
 | 2026-10-31T20:14:46Z | commit | `7cf1eb1` | Final assembly: README, SOURCES, FRICTIONAL timeline | git log |  |
 | 2026-10-31T20:22:16Z | commit | `007c19b` | README: identify assignment and student | git log |  |
 | 2026-10-31T20:22:35Z | commit | `70aab50` | SOURCES: note on chat-surface evidence | git log |  |
-| 2026-10-31T20:51:14Z | commit | `03d92dd` | Meena: correct contract provenance line, held-out outcome statement, chat header | git log |  |
+| 2026-10-31T20:51:14Z | commit | `03d92dd` | Meena: correct contract provenance line, held-out outcome statement, chat header | git log | Twice, a commit replaced newer content in CONTRACT.md and EXPERIMENT.md with an older copy (placeholders back, held-out tables and Limits deleted). After 03d92dd I suspected a TextEdit window holding an old version; after d9101c9 the same pattern made me conclude it was TextEdit's autosave from a stale window. I inferred this; I did not prove it. I restored the files from git (4e3936d), stopped using TextEdit, and had Claude Code insert my text verbatim. |
 | 2026-10-31T20:52:51Z | commit | `85c213d` | Failing test (audit row 2): rule judge cites posting.location.name when the posting has none | git log |  |
 | 2026-10-31T20:52:51Z | test failure | `85c213d` | 3 failed, 92 passed: `test_rule_without_location_cites_only_existing_fields` [3 params] | failing-test commit; pytest output in session |  |
 | 2026-10-31T20:53:08Z | commit | `f0ae1d2` | Fix (audit row 2): rule judge cites posting.location.name only when it exists | git log |  |
@@ -47,3 +47,4 @@
 | 2026-10-31T20:53:48Z | commit | `5003516` | Fix (audit row 12): resolve contradiction about re-running the agent in ACTION-SURFACE.md | git log |  |
 | 2026-10-31T20:54:10Z | commit | `3060d6b` | Fix (audit row 15): correct chat-evidence note and attribution in SOURCES.md | git log |  |
 | 2026-10-31T20:54:17Z | commit | `d36ea95` | Fix (audit row 19): note in README that Canvas folder name overrides assignment-XX | git log |  |
+| 2026-10-31T21:10:30Z | commit | `d9101c9` | Held-out outcome statement (Meena) | git log | see above |
