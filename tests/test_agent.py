@@ -208,6 +208,28 @@ def test_alignment_catches_off_by_one():
     assert len(errs) == 3
 
 
+def judge_NEXT_ID_WRONG(postings):
+    """CONSTRUCTED wrong implementation: wrong version 1, each verdict tagged with the
+    next posting's id while its justification quotes the current posting's title."""
+    n = len(postings)
+    return [{"posting_id": postings[(i + 1) % n]["id"], "rule_verdict": "not_relevant",
+             "rule_justification": f'`posting.title` "{p["title"]}" vs `resume.skills`.'}
+            for i, p in enumerate(postings)]
+
+
+def test_alignment_catches_verdict_paired_with_next_id():
+    with pytest.raises(AssertionError):
+        check_aligned(judge_NEXT_ID_WRONG)
+    verdicts = judge_NEXT_ID_WRONG(POSTINGS)
+    errs = check_alignment(verdicts, POSTINGS)
+    assert len(errs) == len(POSTINGS)
+    titles = {p["id"]: p["title"] for p in POSTINGS}
+    for v, err in zip(verdicts, errs):
+        own = f'"{titles[v["posting_id"]]}"'
+        assert own not in v["rule_justification"]  # quoted title belongs to another id
+        assert err == f'{v["posting_id"]}: rule_justification does not quote its own title {own}'
+
+
 def test_alignment_checks_claude_justification_too():
     v = judge_ALIGNED(POSTINGS)
     v[0]["claude_justification"] = f'`posting.title` "{POSTINGS[1]["title"]}" `resume.skills`'
