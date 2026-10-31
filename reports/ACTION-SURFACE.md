@@ -12,7 +12,7 @@ After the three fixes below, the SEEDED two-run was re-run from the saved files 
 
 ## 1. Chat paste
 
-The prompt contains the contract's rule text, `resume.personal.location = "Boston, MA"`, and three posting fields typed in by hand: `posting.id`, `posting.title`, `posting.location.name`. The response file records: `claude.ai fresh chat, 2026-10-31, <3.43 pm>, model: <what the selector showed>`. The time and model fields still contain those placeholders, so the model used is **not recorded**.
+The prompt contains the contract's rule text, `resume.personal.location = "Boston, MA"`, and three posting fields typed in by hand: `posting.id`, `posting.title`, `posting.location.name`. The response file records: `claude.ai fresh chat, 2026-10-31, 3:43 PM EDT, model: not recorded`. The model used is **not recorded**.
 
 | | |
 |---|---|
