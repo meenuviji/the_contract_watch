@@ -63,12 +63,10 @@ All four say `not_relevant`. Surfaces 1 and 2 apply the same rule as the rule ju
 
 ## Least autonomy that suffices
 
-> **DRAFT: Meena will rewrite this section.**
->
-> The task "judge posting 8335469 against CONTRACT.md" is fully specified by the rule, and the rule is deterministic: `agent/rule_judge.py` applies it with no model, no network and no write access, reading two inputs. For this task that is the least autonomy that suffices, and the three model surfaces add nothing to the verdict except a second opinion that is itself a JUDGMENT.
->
-> If a model judgment is wanted (for example, the LABELING.md criteria, which need `posting.content`), the file-read surface is enough. It sees the whole posting (unlike the chat paste), leaves a transcript showing what it read, and cannot write or browse. Its one real exposure is what sits in its working directory, which is why it ran in a temp directory with a single file.
->
-> The agent's extra authority is network fetch, state writes and evidence writes. That authority is needed for the job of watching the board for new postings, not for judging a posting. Each extra capability brought a concrete risk above: redirects past the allow-list, state committed before judging, evidence written by a test. The chat paste has the least machine authority but the weakest record: a hand-copied input, a model that was not recorded, and a justification that fails the contract's validator.
->
-> So: grant network and write access only to the fetch-and-state step, and run judging with read-only access to exactly the inputs it needs.
+The task only requires deterministic execution for fetching job payloads, tracking processed IDs in local state, and applying the baseline filtering rules; only the final ambiguous evaluation step actually requires a model judgment. 
+
+I chose the local read-only file surface piped through our schema validator because it isolates the model's judgment to strict data inputs while programmatically enforcing our contract boundaries. 
+
+When testing the chat surface, the model’s justification cited no résumé field at all and silently passed without anything catching the omission, whereas the file surface subjected the exact same model output to our validator and flagged schema discrepancies immediately. 
+
+Granting extra autonomy introduces unneeded network and filesystem write access, which directly creates vulnerabilities: the three core implementation gaps Claude Code discovered—unhandled redirects, state being committed prior to validation, and fragile citation path checking—occurred precisely within the pipeline components possessing that elevated access.
