@@ -8,7 +8,8 @@ import re
 
 from agent.persona import get_path
 
-CITATION_RE = re.compile(r"\b(resume|posting)((?:\.[A-Za-z_][A-Za-z0-9_]*)+)")
+# Segments are keys or list indexes (e.g. resume.experience.0.title); each is checked by get_path.
+CITATION_RE = re.compile(r"\b(resume|posting)((?:\.(?:[A-Za-z_][A-Za-z0-9_]*|\d+))+)")
 JUSTIFICATION_KEYS = ("rule_justification", "claude_justification")
 
 
